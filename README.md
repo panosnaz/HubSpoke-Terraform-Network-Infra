@@ -4,7 +4,7 @@ This folder contains Terraform infrastructure-as-code configurations for deployi
 
 ## Overview
 
-The resources defined in this module provision the core networking components required for the GWC environment. 
+The resources defined in the network folders provision the core networking components required for the GWC / SDC environments. 
 This includes:
 
 - Resource Groups for the Networks (VNets)
@@ -15,7 +15,7 @@ This includes:
 - VNet Peerings
 - Required delegation and service endpoints
 
-## Folder Structure
+## Network Folder Structure
 
 - `main.tf`: \
 This is the entry point for deploying the relevant network stack.\
@@ -53,6 +53,30 @@ sdc/
     └── variables.tf            # Contains all the variables for parameterization
 │
 └── README.md               # General network documentation
+```
+
+## Modules Folder Structure
+
+```
+├───azure_firewall-v2
+│       main.tf
+│       output.tf
+│       variables.tf
+│
+├───hub_network
+│       main.tf
+│       output.tf
+│       variables.tf
+│
+├───spoke_network
+│       main.tf
+│       main.tf.old
+│       output.tf
+│       variables.tf
+│
+└───vpn_gateway
+        main.tf
+        variables.tf
 ```
 
 ## Deployment Instructions
