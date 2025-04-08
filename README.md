@@ -1,4 +1,4 @@
-# Network Infrastructure-as-Code
+# Azure Hub-and-Spoke Network Infrastructure-as-Code
 
 This folder contains Terraform infrastructure-as-code configurations for deploying the  **GWC (Primary Site - `gwc` folder)** and the **SDC (DR site - `sdc` folder)** network configuration. 
 
