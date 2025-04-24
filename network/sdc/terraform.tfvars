@@ -136,14 +136,14 @@ firewall_policy_rule_collection_groups = {
         rules = [
           {
             name              = "Net-rules_identity-gwc-dc-kms-activation"
-            source_addresses  = ["10.200.8.0/27"]
+            source_addresses  = ["10.20.8.0/27"]
             destination_ports = ["1688"]
             destination_fqdns = ["azkms.core.windows.net"]
             protocols         = ["TCP"]
           },
           {
             name                  = "DCs-To-Monitor"
-            source_addresses      = ["10.200.8.0/27"]
+            source_addresses      = ["10.20.8.0/27"]
             destination_ports     = ["443"]
             destination_addresses = ["AzureMonitor", "Storage"]
             protocols             = ["TCP"]
@@ -154,96 +154,32 @@ firewall_policy_rule_collection_groups = {
         action = "Allow"
         rules = [
           {
-            name                  = "onprem_TEMP_full_access_to_DC"
-            source_addresses      = ["192.168.131.3/32", "192.168.131.4/32"]
-            destination_ports     = ["*"]
-            destination_addresses = ["10.200.8.4/32", "10.200.8.5/32"]
-            protocols             = ["TCP"]
-          },
-          {
             name                  = "onprem_tcp_access_to_DC"
-            source_addresses      = ["192.168.131.3/32", "192.168.131.4/32"]
+            source_addresses      = ["192.168.13.3/32", "192.168.13.4/32"]
             destination_ports     = ["49443", "464", "88", "3268", "3269", "636", "389", "137", "49152-65535", "135", "445", "5985", "53", "123", "138", "139", "3389"]
-            destination_addresses = ["10.200.8.4/32", "10.200.8.5/32"]
+            destination_addresses = ["10.20.8.4/32", "10.20.8.5/32"]
             protocols             = ["TCP"]
           },
           {
             name                  = "onprem_udp_access_to_DC"
-            source_addresses      = ["192.168.131.3/32", "192.168.131.4/32"]
+            source_addresses      = ["192.168.13.3/32", "192.168.13.4/32"]
             destination_ports     = ["464", "88", "389", "137", "135", "53", "123", "138", "139", "3389"]
-            destination_addresses = ["10.200.8.4/32", "10.200.8.5/32"]
+            destination_addresses = ["10.20.8.4/32", "10.20.8.5/32"]
             protocols             = ["UDP"]
           },
           {
             name                  = "DC_tcp_access_to_onprem"
-            source_addresses      = ["10.200.8.4/32", "10.200.8.5/32"]
+            source_addresses      = ["10.20.8.4/32", "10.20.8.5/32"]
             destination_ports     = ["49443", "464", "88", "3268", "3269", "636", "389", "137", "49152-65535", "135", "445", "5985", "53", "123", "138", "139", "3389"]
-            destination_addresses = ["192.168.131.3/32", "192.168.131.4/32"]
+            destination_addresses = ["192.168.13.3/32", "192.168.13.4/32"]
             protocols             = ["TCP"]
           },
           {
             name                  = "DC_udp_access_to_onprem"
-            source_addresses      = ["10.200.8.4/32", "10.200.8.5/32"]
+            source_addresses      = ["10.20.8.4/32", "10.20.8.5/32"]
             destination_ports     = ["464", "88", "389", "137", "135", "53", "123", "138", "139", "3389"]
-            destination_addresses = ["192.168.131.3/32", "192.168.131.4/32"]
+            destination_addresses = ["192.168.13.3/32", "192.168.13.4/32"]
             protocols             = ["UDP"]
-          }
-        ]
-      },
-      "Net-rules_identity-gwc-entra" = {
-        action = "Allow"
-        rules = [
-          {
-            name              = "Net-rules_identity-gwc-entra-kms-activation"
-            source_addresses  = ["10.200.8.160/27"]
-            destination_ports = ["1688"]
-            destination_fqdns = ["azkms.core.windows.net"]
-            protocols         = ["TCP"]
-          },
-          {
-            name                  = "Net-rules_identity-gwc-entra-ad_connect"
-            source_addresses      = ["10.200.8.160/27"]
-            destination_ports     = ["443", "80"]
-            destination_addresses = ["AzureActiveDirectory"]
-            protocols             = ["TCP"]
-          },
-          {
-            name                  = "Entra-To-Monitor"
-            source_addresses      = ["10.200.8.160/27"]
-            destination_ports     = ["443"]
-            destination_addresses = ["Storage", "AzureMonitor"]
-            protocols             = ["TCP"]
-          },
-          {
-            name                  = "Entra-To-DC"
-            source_addresses      = ["10.200.8.160/27"]
-            destination_ports     = ["389"]
-            destination_addresses = ["10.200.8.4", "10.200.8.5"]
-            protocols             = ["TCP", "UDP"]
-          }
-        ]
-      },
-      "Allow_MgmtDevOpsPool" = {
-        action = "Allow"
-        rules = [
-          {
-            name                  = "Devops-to-KVs"
-            source_addresses      = ["10.200.10.128/28"]
-            destination_ports     = ["443"]
-            destination_addresses = ["10.200.8.128/27", "10.200.13.0/27"]
-            protocols             = ["TCP"]
-          }
-        ]
-      },
-      "Net-rules_mgmt-gwc-Jump" = {
-        action = "Allow"
-        rules = [
-          {
-            name                  = "Jump-To-Monitor"
-            source_addresses      = ["10.200.10.64/27"]
-            destination_ports     = ["443"]
-            destination_addresses = ["AzureMonitor", "Storage"]
-            protocols             = ["TCP"]
           }
         ]
       }
@@ -255,7 +191,7 @@ firewall_policy_rule_collection_groups = {
         rules = [
           {
             name              = "Allow-MS-Updates_fqdns"
-            source_addresses  = ["10.200.8.0/27", "10.200.8.160/27"]
+            source_addresses  = ["10.20.8.0/27", "10.20.8.160/27"]
             destination_fqdns = ["*.windowsupdate.microsoft.com", "*.update.microsoft.com", "*.windowsupdate.com", "*.download.windowsupdate.com", "*.ntservicepack.microsoft.com"]
             protocols = [{
               port = "443"
@@ -268,7 +204,7 @@ firewall_policy_rule_collection_groups = {
           },
           {
             name                  = "Allow-MS-Updates_fqdnTags"
-            source_addresses      = ["10.200.8.0/27", "10.200.8.160/27"]
+            source_addresses      = ["10.20.8.0/27", "10.20.8.160/27"]
             destination_fqdn_tags = ["WindowsUpdate"]
             protocols = [{
               port = "443"
@@ -280,31 +216,13 @@ firewall_policy_rule_collection_groups = {
             }]
           }
         ]
-      },
-      "App-rules_identity-gwc-entra" = {
-        action = "Allow"
-        rules = [
-          {
-            name              = "App-rules_identity-gwc-entra-ad_connect"
-            source_addresses  = ["10.200.8.160/27"]
-            destination_fqdns = ["*.registration.msappproxy.net", "*.login.microsoftonline.com", "*.microsoftonline.com", "*.graph.windows.net", "*.servicebus.windows.net", "*.blob.core.windows.net", "*.windows.net", "*.graph.microsoft.com", "*.microsoft.com", "*.aadcdn.msftauth.net", "*.msftauth.net", "*.secure.aadcdn.microsoftonline-p.com", "*.aadcdn.microsoftonline-p.com", "*.microsoftonline-p.com"]
-            protocols = [{
-              port = "443"
-              type = "Https"
-              },
-              {
-                port = "80"
-                type = "Http"
-            }]
-          }
-        ]
-      },
+      }
       "DevOps" = {
         action = "Allow"
         rules = [
           {
             name              = "DevOpsPoolComs"
-            source_addresses  = ["10.200.10.128/28"]
+            source_addresses  = ["10.20.10.128/28"]
             destination_fqdns = ["objects.githubusercontent.com", "graph.microsoft.com", "github.com", "releases.hashicorp.com", "registry.terraform.io", "management.azure.com", "login.microsoftonline.com", "*.prod.manageddevops.microsoft.com", "rmprodbuilds.azureedge.net", "vstsagentpackage.azureedge.net", "*.queue.core.windows.net", "server.pipe.aria.microsoft.com", "azure.archive.ubuntu.com", "www.microsoft.com", "packages.microsoft.com", "ppa.launchpad.net", "dl.fedoraproject.org", "auth.docker.io", "dev.azure.com", "*.services.visualstudio.com", "*.vsblob.visualstudio.com", "*.vssps.visualstudio.com", "*.visualstudio.com"]
             protocols = [{
               port = "443"
@@ -459,38 +377,6 @@ identity_vnet_subnets = {
     service_endpoints                 = ["Microsoft.Storage"]
     private_endpoint_network_policies = "Enabled"
   }
-  subnet_3 = {
-    name                              = "snet-identity-sdc-interCA"
-    address_prefixes                  = "10.20.8.64/27"
-    nsg_name                          = "nsg-identity-sdc-interCA"
-    service_delegation                = []
-    service_endpoints                 = ["Microsoft.Storage"]
-    private_endpoint_network_policies = "Enabled"
-  }
-  subnet_4 = {
-    name                              = "snet-identity-sdc-backup"
-    address_prefixes                  = "10.20.8.96/27"
-    nsg_name                          = "nsg-identity-sdc-backup"
-    service_delegation                = []
-    service_endpoints                 = ["Microsoft.Storage"]
-    private_endpoint_network_policies = "Enabled"
-  }
-  subnet_5 = {
-    name                              = "snet-identity-sdc-keyvault"
-    address_prefixes                  = "10.20.8.128/27"
-    nsg_name                          = "nsg-identity-sdc-keyvault"
-    service_delegation                = []
-    service_endpoints                 = ["Microsoft.Storage"]
-    private_endpoint_network_policies = "Disabled"
-  },
-  subnet_6 = {
-    name                              = "snet-identity-sdc-entra"
-    address_prefixes                  = "10.20.8.160/27"
-    nsg_name                          = "nsg-identity-sdc-entra"
-    service_delegation                = []
-    service_endpoints                 = ["Microsoft.Storage"]
-    private_endpoint_network_policies = "Enabled"
-  }
 }
 identity_udr_routes = {
   route_01 = {
@@ -516,22 +402,6 @@ mgmt_vnet_subnets = {
     name                              = "snet-mgmt-sdc-servers"
     address_prefixes                  = "10.20.10.0/27"
     nsg_name                          = "nsg-mgmt-sdc-servers"
-    service_delegation                = []
-    service_endpoints                 = ["Microsoft.Storage"]
-    private_endpoint_network_policies = "Enabled"
-  },
-  subnet_2 = {
-    name                              = "snet-mgmt-sdc-backup"
-    address_prefixes                  = "10.20.10.32/27"
-    nsg_name                          = "nsg-mgmt-sdc-backup"
-    service_delegation                = []
-    service_endpoints                 = ["Microsoft.Storage"]
-    private_endpoint_network_policies = "Enabled"
-  },
-  subnet_3 = {
-    name                              = "snet-mgmt-sdc-jump"
-    address_prefixes                  = "10.20.10.64/27"
-    nsg_name                          = "nsg-mgmt-sdc-jump"
     service_delegation                = []
     service_endpoints                 = ["Microsoft.Storage"]
     private_endpoint_network_policies = "Enabled"

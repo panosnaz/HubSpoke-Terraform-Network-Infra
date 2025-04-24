@@ -172,13 +172,6 @@ firewall_policy_rule_collection_groups = {
         action = "Allow"
         rules = [
           {
-            name                  = "onprem_TEMP_full_access_to_DC"
-            source_addresses      = ["192.168.131.3/32", "192.168.131.4/32"]
-            destination_ports     = ["*"]
-            destination_addresses = ["10.100.8.4/32", "10.100.8.5/32"]
-            protocols             = ["TCP"]
-          },
-          {
             name                  = "onprem_tcp_access_to_DC"
             source_addresses      = ["192.168.131.3/32", "192.168.131.4/32"]
             destination_ports     = ["49443", "464", "88", "3268", "3269", "636", "389", "137", "49152-65535", "135", "445", "5985", "53", "123", "138", "139", "3389"]
@@ -207,63 +200,6 @@ firewall_policy_rule_collection_groups = {
             protocols             = ["UDP"]
           }
         ]
-      },
-      "Net-rules_identity-gwc-entra" = {
-        action = "Allow"
-        rules = [
-          {
-            name              = "Net-rules_identity-gwc-entra-kms-activation"
-            source_addresses  = ["10.100.8.160/27"]
-            destination_ports = ["1688"]
-            destination_fqdns = ["azkms.core.windows.net"]
-            protocols         = ["TCP"]
-          },
-          {
-            name                  = "Net-rules_identity-gwc-entra-ad_connect"
-            source_addresses      = ["10.100.8.160/27"]
-            destination_ports     = ["443", "80"]
-            destination_addresses = ["AzureActiveDirectory"]
-            protocols             = ["TCP"]
-          },
-          {
-            name                  = "Entra-To-Monitor"
-            source_addresses      = ["10.100.8.160/27"]
-            destination_ports     = ["443"]
-            destination_addresses = ["Storage", "AzureMonitor"]
-            protocols             = ["TCP"]
-          },
-          {
-            name                  = "Entra-To-DC"
-            source_addresses      = ["10.100.8.160/27"]
-            destination_ports     = ["389"]
-            destination_addresses = ["10.100.8.4", "10.100.8.5"]
-            protocols             = ["TCP", "UDP"]
-          }
-        ]
-      },
-      "Allow_MgmtDevOpsPool" = {
-        action = "Allow"
-        rules = [
-          {
-            name                  = "Devops-to-KVs"
-            source_addresses      = ["10.100.10.128/28"]
-            destination_ports     = ["443"]
-            destination_addresses = ["10.100.8.128/27", "10.100.13.0/27"]
-            protocols             = ["TCP"]
-          }
-        ]
-      },
-      "Net-rules_mgmt-gwc-Jump" = {
-        action = "Allow"
-        rules = [
-          {
-            name                  = "Jump-To-Monitor"
-            source_addresses      = ["10.100.10.64/27"]
-            destination_ports     = ["443"]
-            destination_addresses = ["AzureMonitor", "Storage"]
-            protocols             = ["TCP"]
-          }
-        ]
       }
     }
     # App rules 
@@ -288,24 +224,6 @@ firewall_policy_rule_collection_groups = {
             name                  = "Allow-MS-Updates_fqdnTags"
             source_addresses      = ["10.100.8.0/27", "10.100.8.160/27"]
             destination_fqdn_tags = ["WindowsUpdate"]
-            protocols = [{
-              port = "443"
-              type = "Https"
-              },
-              {
-                port = "80"
-                type = "Http"
-            }]
-          }
-        ]
-      },
-      "App-rules_identity-gwc-entra" = {
-        action = "Allow"
-        rules = [
-          {
-            name              = "App-rules_identity-gwc-entra-ad_connect"
-            source_addresses  = ["10.100.8.160/27"]
-            destination_fqdns = ["*.registration.msappproxy.net", "*.login.microsoftonline.com", "*.microsoftonline.com", "*.graph.windows.net", "*.servicebus.windows.net", "*.blob.core.windows.net", "*.windows.net", "*.graph.microsoft.com", "*.microsoft.com", "*.aadcdn.msftauth.net", "*.msftauth.net", "*.secure.aadcdn.microsoftonline-p.com", "*.aadcdn.microsoftonline-p.com", "*.microsoftonline-p.com"]
             protocols = [{
               port = "443"
               type = "Https"
@@ -477,38 +395,6 @@ identity_vnet_subnets = {
     service_endpoints                 = ["Microsoft.Storage"]
     private_endpoint_network_policies = "Enabled"
   }
-  subnet_3 = {
-    name                              = "snet-identity-gwc-interCA"
-    address_prefixes                  = "10.10.8.64/27"
-    nsg_name                          = "nsg-identity-gwc-interCA"
-    service_delegation                = []
-    service_endpoints                 = ["Microsoft.Storage"]
-    private_endpoint_network_policies = "Enabled"
-  }
-  subnet_4 = {
-    name                              = "snet-identity-gwc-backup"
-    address_prefixes                  = "10.10.8.96/27"
-    nsg_name                          = "nsg-identity-gwc-backup"
-    service_delegation                = []
-    service_endpoints                 = ["Microsoft.Storage"]
-    private_endpoint_network_policies = "Enabled"
-  }
-  subnet_5 = {
-    name                              = "snet-identity-gwc-keyvault"
-    address_prefixes                  = "10.10.8.128/27"
-    nsg_name                          = "nsg-identity-gwc-keyvault"
-    service_delegation                = []
-    service_endpoints                 = ["Microsoft.Storage"]
-    private_endpoint_network_policies = "Disabled"
-  },
-  subnet_6 = {
-    name                              = "snet-identity-gwc-entra"
-    address_prefixes                  = "10.10.8.160/27"
-    nsg_name                          = "nsg-identity-gwc-entra"
-    service_delegation                = []
-    service_endpoints                 = ["Microsoft.Storage"]
-    private_endpoint_network_policies = "Enabled"
-  }
 }
 identity_udr_routes = {
   route_01 = {
@@ -534,22 +420,6 @@ mgmt_vnet_subnets = {
     name                              = "snet-mgmt-gwc-servers"
     address_prefixes                  = "10.10.10.0/27"
     nsg_name                          = "nsg-mgmt-gwc-servers"
-    service_delegation                = []
-    service_endpoints                 = ["Microsoft.Storage"]
-    private_endpoint_network_policies = "Enabled"
-  },
-  subnet_2 = {
-    name                              = "snet-mgmt-gwc-backup"
-    address_prefixes                  = "10.10.10.32/27"
-    nsg_name                          = "nsg-mgmt-gwc-backup"
-    service_delegation                = []
-    service_endpoints                 = ["Microsoft.Storage"]
-    private_endpoint_network_policies = "Enabled"
-  },
-  subnet_3 = {
-    name                              = "snet-mgmt-gwc-jump"
-    address_prefixes                  = "10.10.10.64/27"
-    nsg_name                          = "nsg-mgmt-gwc-jump"
     service_delegation                = []
     service_endpoints                 = ["Microsoft.Storage"]
     private_endpoint_network_policies = "Enabled"
