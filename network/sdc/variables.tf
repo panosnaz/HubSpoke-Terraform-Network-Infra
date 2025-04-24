@@ -36,6 +36,18 @@ variable "firewall_subnet" {
   description = "Hub Virtual Network Azure Firewall Subnet CIDR"
   type        = string
 }
+variable "bastion_subnet" {
+  description = "GWC Hub Virtual Network Bastion Subnet CIDR"
+  type        = string
+}
+variable "bastion_host" {
+  description = "GWC Hub Bastion Host name"
+  type        = string
+}
+variable "bastion_ip" {
+  description = "GWC Hub Bastion IP name"
+  type        = string
+}
 ###############################
 # VNET Peerings
 ###############################
