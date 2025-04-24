@@ -113,7 +113,7 @@ module "identity_spoke_network" {
 
 # Deploy VPN Gateway ~30min
 module "vpn_gateway" {
-  source = "../../modules/vpn_gateway"
+  source = "../../../modules/vpn_gateway"
   depends_on = [
     module.hub_network,
     #   module.er_gateway
@@ -144,9 +144,10 @@ module "vpn_gateway" {
   # vpn_client_aad_audience  = var.vpn_client_aad_audience
   # vpn_client_aad_issuer    = var.vpn_client_aad_issuer
   # vpn_client_aad_tenant    = var.vpn_client_aad_tenant
-  root_certificate_name = var.root_certificate_name
-  public_cert_data      = var.public_cert_data
-
+  root_certificate_name_1 = var.root_certificate_name_1
+  public_cert_data_1      = var.public_cert_data_1
+  root_certificate_name_2 = var.root_certificate_name_2
+  public_cert_data_2      = var.public_cert_data_2
   ############################
   # S2S VPN variables
   ############################
@@ -168,22 +169,20 @@ module "vpn_gateway" {
 
 # Deploy Azure Firewall ~15min
 module "azure_firewall" {
-  source     = "../../modules/azure_firewall-v2"
+  source     = "../../../modules/azure_firewall-v2"
   depends_on = [module.hub_network]
 
-  providers                         = { azurerm = azurerm.connectivity }
-  hub_location                      = var.hub_location
-  firewall_subnet_id                = module.hub_network.firewall_subnet_id
-  hub_resource_group                = var.hub_resource_group
-  firewall_pip_name                 = var.firewall_pip_name
-  firewall_pip_allocation_method    = var.firewall_pip_allocation_method
-  firewall_pip_sku                  = var.firewall_pip_sku
-  firewall_name                     = var.firewall_name
-  firewall_policy_name              = var.firewall_policy_name
-  firewall_sku_tier                 = var.firewall_sku_tier
-  firewall_zones                    = var.firewall_zones
-  firewall_tags                     = var.global_tags
-  firewall_dnat_rule_collections    = var.firewall_dnat_rule_collections
-  firewall_network_rule_collections = var.firewall_network_rule_collections
-  firewall_app_rule_collections     = var.firewall_app_rule_collections
+  providers                              = { azurerm = azurerm.connectivity }
+  hub_location                           = var.hub_location
+  firewall_subnet_id                     = module.hub_network.firewall_subnet_id
+  hub_resource_group                     = var.hub_resource_group
+  firewall_pip_name                      = var.firewall_pip_name
+  firewall_pip_allocation_method         = var.firewall_pip_allocation_method
+  firewall_pip_sku                       = var.firewall_pip_sku
+  firewall_name                          = var.firewall_name
+  firewall_policy_name                   = var.firewall_policy_name
+  firewall_sku_tier                      = var.firewall_sku_tier
+  firewall_zones                         = var.firewall_zones
+  firewall_tags                          = var.global_tags
+  firewall_policy_rule_collection_groups = var.firewall_policy_rule_collection_groups
 }
