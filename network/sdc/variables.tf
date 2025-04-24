@@ -441,49 +441,53 @@ variable "firewall_zones" {
   type        = list(string)
 }
 
-variable "firewall_dnat_rule_collections" {
-  description = "List of firewall DNAT rules"
+variable "firewall_policy_rule_collection_groups" {
+  description = "Map of firewall policy rule collection groups. Keys are the names of the rule collection groups."
   type = map(object({
-    action = string
-    rules = list(object({
-      name                = string
-      description         = optional(string)
-      source_addresses    = list(string)
-      destination_ports   = list(string)
-      destination_address = string
-      translated_port     = string
-      translated_address  = string
-      protocols           = list(string)
-    }))
-  }))
-  default = null
-}
-variable "firewall_network_rule_collections" {
-  description = "Map of firewall network rule collections, where keys are collection names and values are lists of rules."
-  type = map(object({
-    action = string
-    rules = list(object({
-      name                  = string
-      source_addresses      = list(string)
-      destination_ports     = list(string)
-      destination_addresses = list(string)
-      protocols             = list(string)
-    }))
-  }))
-}
-variable "firewall_app_rule_collections" {
-  description = "Map of firewall application rule collections, where keys are collection names and values are lists of rules."
-  type = map(object({
-    action = string
-    rules = list(object({
-      name              = string
-      source_addresses  = list(string)
-      destination_fqdns = list(string)
-      protocols = list(object({
-        port = string
-        type = string
+    priority = number
+
+    firewall_app_rule_collections = optional(map(object({
+      action = string
+      rules = list(object({
+        name                  = string
+        source_addresses      = list(string)
+        destination_fqdns     = optional(list(string))
+        destination_fqdn_tags = optional(list(string)) # For FQDN tags
+        destination_addresses = optional(list(string)) # For application tags
+        web_categories        = optional(list(string))
+        protocols = list(object({
+          port = string
+          type = string
+        }))
       }))
-    }))
+    })), {})
+
+    firewall_network_rule_collections = optional(map(object({
+      action = string
+      rules = list(object({
+        name                  = string
+        source_addresses      = list(string)
+        destination_ports     = list(string)
+        destination_addresses = optional(list(string)) # Mixed values: IP ranges or service tags
+        destination_ip_groups = optional(list(string)) # List of IP Group resource IDs
+        destination_fqdns     = optional(list(string)) # List of FQDNs
+        protocols             = list(string)
+      }))
+    })), {})
+
+    firewall_dnat_rule_collections = optional(map(object({
+      action = string
+      rules = list(object({
+        name                = string
+        description         = optional(string)
+        source_addresses    = list(string)
+        destination_ports   = list(string)
+        destination_address = string
+        translated_port     = string
+        translated_address  = string
+        protocols           = list(string)
+      }))
+    })), {})
+
   }))
-  default = {}
 }
