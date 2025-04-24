@@ -1,7 +1,7 @@
 
 # Deploy Hub Virtual Network and subnets
 module "hub_network" {
-  source = "../../modules/hub_network"
+  source = "../../../modules/hub_network"
 
   providers          = { azurerm = azurerm.connectivity }
   hub_resource_group = var.hub_resource_group
@@ -10,6 +10,9 @@ module "hub_network" {
   hub_vnet_cidr      = var.hub_vnet_cidr
   gateway_subnet     = var.gateway_subnet
   firewall_subnet    = var.firewall_subnet
+  bastion_subnet     = var.bastion_subnet
+  bastion_host       = var.bastion_host
+  bastion_ip         = var.bastion_ip
   hub_tags           = var.global_tags
   dns_servers        = var.dns_servers
   conn_vnet_subnets  = var.conn_vnet_subnets
