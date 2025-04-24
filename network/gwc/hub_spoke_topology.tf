@@ -1,6 +1,6 @@
 # Deploy Hub Virtual Network and subnets
 module "hub_network" {
-  source = "../../modules/hub_network"
+  source = "../../../modules/hub_network"
 
   providers          = { azurerm = azurerm.connectivity }
   hub_resource_group = var.hub_resource_group
@@ -23,7 +23,7 @@ module "hub_network" {
 
 # Deploy a Spoke network - Prod
 module "prod_spoke_network" {
-  source     = "../../modules/spoke_network"
+  source     = "../../../modules/spoke_network"
   depends_on = [module.hub_network]
 
   providers = { azurerm.spoke = azurerm.prod
@@ -46,7 +46,7 @@ module "prod_spoke_network" {
 
 # Deploy a Spoke network - Dev
 module "dev_spoke_network" {
-  source     = "../../modules/spoke_network"
+  source     = "../../../modules/spoke_network"
   depends_on = [module.hub_network]
 
   providers = { azurerm.spoke = azurerm.dev
@@ -69,7 +69,7 @@ module "dev_spoke_network" {
 
 # Deploy a Spoke network - Management
 module "mgmt_spoke_network" {
-  source     = "../../modules/spoke_network"
+  source     = "../../../modules/spoke_network"
   depends_on = [module.hub_network]
 
   providers = { azurerm.spoke = azurerm.mgmt
@@ -92,7 +92,7 @@ module "mgmt_spoke_network" {
 
 # Deploy a Spoke network - Identity
 module "identity_spoke_network" {
-  source     = "../../modules/spoke_network"
+  source     = "../../../modules/spoke_network"
   depends_on = [module.hub_network]
 
   providers = { azurerm.spoke = azurerm.identity
@@ -115,7 +115,7 @@ module "identity_spoke_network" {
 
 # Deploy VPN Gateway ~30min
 module "vpn_gateway" {
-  source = "../../modules/vpn_gateway"
+  source = "../../../modules/vpn_gateway"
   depends_on = [
     module.hub_network,
     #   module.er_gateway
@@ -171,22 +171,20 @@ module "vpn_gateway" {
 
 # Deploy Azure Firewall ~15min
 module "azure_firewall" {
-  source     = "../../modules/azure_firewall-v2"
+  source     = "../../../modules/azure_firewall-v2"
   depends_on = [module.hub_network]
 
-  providers                         = { azurerm = azurerm.connectivity }
-  hub_location                      = var.hub_location
-  firewall_subnet_id                = module.hub_network.firewall_subnet_id
-  hub_resource_group                = var.hub_resource_group
-  firewall_pip_name                 = var.firewall_pip_name
-  firewall_pip_allocation_method    = var.firewall_pip_allocation_method
-  firewall_pip_sku                  = var.firewall_pip_sku
-  firewall_name                     = var.firewall_name
-  firewall_policy_name              = var.firewall_policy_name
-  firewall_sku_tier                 = var.firewall_sku_tier
-  firewall_zones                    = var.firewall_zones
-  firewall_tags                     = var.global_tags
-  firewall_dnat_rule_collections    = var.firewall_dnat_rule_collections
-  firewall_network_rule_collections = var.firewall_network_rule_collections
-  firewall_app_rule_collections     = var.firewall_app_rule_collections
+  providers                              = { azurerm = azurerm.connectivity }
+  hub_location                           = var.hub_location
+  firewall_subnet_id                     = module.hub_network.firewall_subnet_id
+  hub_resource_group                     = var.hub_resource_group
+  firewall_pip_name                      = var.firewall_pip_name
+  firewall_pip_allocation_method         = var.firewall_pip_allocation_method
+  firewall_pip_sku                       = var.firewall_pip_sku
+  firewall_name                          = var.firewall_name
+  firewall_policy_name                   = var.firewall_policy_name
+  firewall_sku_tier                      = var.firewall_sku_tier
+  firewall_zones                         = var.firewall_zones
+  firewall_tags                          = var.global_tags
+  firewall_policy_rule_collection_groups = var.firewall_policy_rule_collection_groups
 }

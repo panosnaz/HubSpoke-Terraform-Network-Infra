@@ -115,7 +115,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 EOF
 
-vpn_client_protocols = ["OpenVPN"]
+vpn_client_protocols = ["IkeV2", "OpenVPN"]
 vpn_gateway_custom_route_address_prefixes = [
   "10.10.0.0/16"
 ]
@@ -144,90 +144,219 @@ pfs_group        = "PFS2"
 sa_lifetime      = "28800"
 
 
-# Defining the FW DNAT rules 
-# firewall_dnat_rule_collections = {
-#   "DNAT_rule_collection1" = {
-#     action = "Dnat"
-#     rules = [
-#       {
-#         description = "List of firewall DNAT rules"
+firewall_policy_rule_collection_groups = {
+  "fw-policy-rcg" = {
+    priority = 100
+    # Network rules 
+    firewall_network_rule_collections = {
+      "Net-rules_identity-gwc-dc" = {
+        action = "Allow"
+        rules = [
+          {
+            name              = "Net-rules_identity-gwc-dc-kms-activation"
+            source_addresses  = ["10.100.8.0/27"]
+            destination_ports = ["1688"]
+            destination_fqdns = ["azkms.core.windows.net"]
+            protocols         = ["TCP"]
+          },
+          {
+            name                  = "DCs-To-Monitor"
+            source_addresses      = ["10.100.8.0/27"]
+            destination_ports     = ["443"]
+            destination_addresses = ["AzureMonitor", "Storage"]
+            protocols             = ["TCP"]
+          }
+        ]
+      },
+      "OnPrem_VPN_access_to_HUB" = {
+        action = "Allow"
+        rules = [
+          {
+            name                  = "onprem_TEMP_full_access_to_DC"
+            source_addresses      = ["192.168.131.3/32", "192.168.131.4/32"]
+            destination_ports     = ["*"]
+            destination_addresses = ["10.100.8.4/32", "10.100.8.5/32"]
+            protocols             = ["TCP"]
+          },
+          {
+            name                  = "onprem_tcp_access_to_DC"
+            source_addresses      = ["192.168.131.3/32", "192.168.131.4/32"]
+            destination_ports     = ["49443", "464", "88", "3268", "3269", "636", "389", "137", "49152-65535", "135", "445", "5985", "53", "123", "138", "139", "3389"]
+            destination_addresses = ["10.100.8.4/32", "10.100.8.5/32"]
+            protocols             = ["TCP"]
+          },
+          {
+            name                  = "onprem_udp_access_to_DC"
+            source_addresses      = ["192.168.131.3/32", "192.168.131.4/32"]
+            destination_ports     = ["464", "88", "389", "137", "135", "53", "123", "138", "139", "3389"]
+            destination_addresses = ["10.100.8.4/32", "10.100.8.5/32"]
+            protocols             = ["UDP"]
+          },
+          {
+            name                  = "DC_tcp_access_to_onprem"
+            source_addresses      = ["10.100.8.4/32", "10.100.8.5/32"]
+            destination_ports     = ["49443", "464", "88", "3268", "3269", "636", "389", "137", "49152-65535", "135", "445", "5985", "53", "123", "138", "139", "3389"]
+            destination_addresses = ["192.168.131.3/32", "192.168.131.4/32"]
+            protocols             = ["TCP"]
+          },
+          {
+            name                  = "DC_udp_access_to_onprem"
+            source_addresses      = ["10.100.8.4/32", "10.100.8.5/32"]
+            destination_ports     = ["464", "88", "389", "137", "135", "53", "123", "138", "139", "3389"]
+            destination_addresses = ["192.168.131.3/32", "192.168.131.4/32"]
+            protocols             = ["UDP"]
+          }
+        ]
+      },
+      "Net-rules_identity-gwc-entra" = {
+        action = "Allow"
+        rules = [
+          {
+            name              = "Net-rules_identity-gwc-entra-kms-activation"
+            source_addresses  = ["10.100.8.160/27"]
+            destination_ports = ["1688"]
+            destination_fqdns = ["azkms.core.windows.net"]
+            protocols         = ["TCP"]
+          },
+          {
+            name                  = "Net-rules_identity-gwc-entra-ad_connect"
+            source_addresses      = ["10.100.8.160/27"]
+            destination_ports     = ["443", "80"]
+            destination_addresses = ["AzureActiveDirectory"]
+            protocols             = ["TCP"]
+          },
+          {
+            name                  = "Entra-To-Monitor"
+            source_addresses      = ["10.100.8.160/27"]
+            destination_ports     = ["443"]
+            destination_addresses = ["Storage", "AzureMonitor"]
+            protocols             = ["TCP"]
+          },
+          {
+            name                  = "Entra-To-DC"
+            source_addresses      = ["10.100.8.160/27"]
+            destination_ports     = ["389"]
+            destination_addresses = ["10.100.8.4", "10.100.8.5"]
+            protocols             = ["TCP", "UDP"]
+          }
+        ]
+      },
+      "Allow_MgmtDevOpsPool" = {
+        action = "Allow"
+        rules = [
+          {
+            name                  = "Devops-to-KVs"
+            source_addresses      = ["10.100.10.128/28"]
+            destination_ports     = ["443"]
+            destination_addresses = ["10.100.8.128/27", "10.100.13.0/27"]
+            protocols             = ["TCP"]
+          }
+        ]
+      },
+      "Net-rules_mgmt-gwc-Jump" = {
+        action = "Allow"
+        rules = [
+          {
+            name                  = "Jump-To-Monitor"
+            source_addresses      = ["10.100.10.64/27"]
+            destination_ports     = ["443"]
+            destination_addresses = ["AzureMonitor", "Storage"]
+            protocols             = ["TCP"]
+          }
+        ]
+      }
+    }
+    # App rules 
+    firewall_app_rule_collections = {
+      "Allow-Microsoft-Updates" = {
+        action = "Allow"
+        rules = [
+          {
+            name              = "Allow-MS-Updates_fqdns"
+            source_addresses  = ["10.100.8.0/27", "10.100.8.160/27"]
+            destination_fqdns = ["*.windowsupdate.microsoft.com", "*.update.microsoft.com", "*.windowsupdate.com", "*.download.windowsupdate.com", "*.ntservicepack.microsoft.com"]
+            protocols = [{
+              port = "443"
+              type = "Https"
+              },
+              {
+                port = "80"
+                type = "Http"
+            }]
+          },
+          {
+            name                  = "Allow-MS-Updates_fqdnTags"
+            source_addresses      = ["10.100.8.0/27", "10.100.8.160/27"]
+            destination_fqdn_tags = ["WindowsUpdate"]
+            protocols = [{
+              port = "443"
+              type = "Https"
+              },
+              {
+                port = "80"
+                type = "Http"
+            }]
+          }
+        ]
+      },
+      "App-rules_identity-gwc-entra" = {
+        action = "Allow"
+        rules = [
+          {
+            name              = "App-rules_identity-gwc-entra-ad_connect"
+            source_addresses  = ["10.100.8.160/27"]
+            destination_fqdns = ["*.registration.msappproxy.net", "*.login.microsoftonline.com", "*.microsoftonline.com", "*.graph.windows.net", "*.servicebus.windows.net", "*.blob.core.windows.net", "*.windows.net", "*.graph.microsoft.com", "*.microsoft.com", "*.aadcdn.msftauth.net", "*.msftauth.net", "*.secure.aadcdn.microsoftonline-p.com", "*.aadcdn.microsoftonline-p.com", "*.microsoftonline-p.com"]
+            protocols = [{
+              port = "443"
+              type = "Https"
+              },
+              {
+                port = "80"
+                type = "Http"
+            }]
+          }
+        ]
+      },
+      "DevOps" = {
+        action = "Allow"
+        rules = [
+          {
+            name              = "DevOpsPoolComs"
+            source_addresses  = ["10.100.10.128/28"]
+            destination_fqdns = ["objects.githubusercontent.com", "graph.microsoft.com", "github.com", "releases.hashicorp.com", "registry.terraform.io", "management.azure.com", "login.microsoftonline.com", "*.prod.manageddevops.microsoft.com", "rmprodbuilds.azureedge.net", "vstsagentpackage.azureedge.net", "*.queue.core.windows.net", "server.pipe.aria.microsoft.com", "azure.archive.ubuntu.com", "www.microsoft.com", "packages.microsoft.com", "ppa.launchpad.net", "dl.fedoraproject.org", "auth.docker.io", "dev.azure.com", "*.services.visualstudio.com", "*.vsblob.visualstudio.com", "*.vssps.visualstudio.com", "*.visualstudio.com"]
+            protocols = [{
+              port = "443"
+              type = "Https"
+              },
+              {
+                port = "80"
+                type = "Http"
+            }]
+          }
+        ]
+      }
+    }
+    # DNAT rules 
+    firewall_dnat_rule_collections = {
+      # "DNAT_rule_collection1" = {
+      #   action = "Dnat"
+      #   rules = [
+      #     {
+      #       description = "List of firewall DNAT rules"
 
-#         name                = "RDP_to_TestVMKeyVaultProd"
-#         source_addresses    = ["5.55.210.13/32"]
-#         destination_ports   = ["3389"]
-#         destination_address = "9.141.13.200"
-#         translated_port     = "3389"
-#         translated_address  = "10.10.13.5"
-#         protocols           = ["TCP"]
-#       }
-#     ]
-#   }
-# }
-# Defining the FW Network rules 
-firewall_network_rule_collections = {
-  "OnPrem_VPN_access_to_HUB" = {
-    action = "Allow"
-    rules = [
-      {
-        name                  = "onprem_tcp_access_to_DC"
-        source_addresses      = ["192.168.1.3/32", "192.168.1.4/32"]
-        destination_ports     = ["49443", "464", "88", "3268", "3269", "636", "389", "137", "49152-65535", "135", "445", "5985", "53", "123"]
-        destination_addresses = ["10.10.8.4/32", "10.10.8.5/32"]
-        protocols             = ["TCP"]
-      },
-      {
-        name                  = "onprem_udp_access_to_DC"
-        source_addresses      = ["192.168.1.3/32", "192.168.1.4/32"]
-        destination_ports     = ["464", "88", "389", "137", "135", "53", "123"]
-        destination_addresses = ["10.10.8.4/32", "10.10.8.5/32"]
-        protocols             = ["UDP"]
-      },
-      {
-        name                  = "DC_tcp_access_to_onprem"
-        source_addresses      = ["10.10.8.4/32", "10.10.8.5/32"]
-        destination_ports     = ["49443", "464", "88", "3268", "3269", "636", "389", "137", "49152-65535", "135", "445", "5985", "53", "123"]
-        destination_addresses = ["192.168.1.3/32", "192.168.1.4/32"]
-        protocols             = ["TCP"]
-      },
-      {
-        name                  = "DC_udp_access_to_onprem"
-        source_addresses      = ["10.10.8.4/32", "10.10.8.5/32"]
-        destination_ports     = ["464", "88", "389", "137", "135", "53", "123"]
-        destination_addresses = ["192.168.1.3/32", "192.168.1.4/32"]
-        protocols             = ["UDP"]
-      }
-    ]
-  },
-  "Net-rules_identity-gwc-dc" = {
-    action = "Allow"
-    rules = [
-      {
-        name                  = "Net-rules_identity-gwc-dc"
-        source_addresses      = ["10.10.8.0/27"]
-        destination_ports     = ["443", "80"]
-        destination_addresses = ["*"]
-        protocols             = ["TCP"]
-      }
-    ]
+      #       name                = "RDP_to_TestVMKeyVaultProd"
+      #       source_addresses    = ["5.55.210.13/32"]
+      #       destination_ports   = ["3389"]
+      #       destination_address = "9.141.10.10"
+      #       translated_port     = "3389"
+      #       translated_address  = "10.100.13.5"
+      #       protocols           = ["TCP"]
+      #     }
+      #   ]
+      # }
+    }
   }
 }
-# Defining the FW App rules 
-# firewall_app_rule_collections = {
-#   "app_outbound" = {
-#     action = "Allow"
-#     rules = [
-#       {
-#         name              = "outbound_access"
-#         source_addresses  = ["10.10.0.0/16"]
-#         destination_fqdns = ["*"]
-#         protocols = [{
-#           port = "443"
-#           type = "Https"
-#         }]
-#       }
-#     ]
-#   }
-# }
 
 # GWC PROD resources
 prod_sub_id         = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
