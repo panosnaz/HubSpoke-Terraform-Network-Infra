@@ -98,7 +98,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 EOF
 
-vpn_client_protocols = ["OpenVPN"]
+vpn_client_protocols = ["IkeV2", "OpenVPN"]
 vpn_gateway_custom_route_address_prefixes = [
   "10.20.0.0/16"
 ]
@@ -247,7 +247,7 @@ firewall_policy_rule_collection_groups = {
       #       name                = "RDP_to_TestVMKeyVaultProd"
       #       source_addresses    = ["5.55.210.13/32"]
       #       destination_ports   = ["3389"]
-      #       destination_address = "9.141.10.10"
+      #       destination_address = "x.x.x.x" # AZ FW IP
       #       translated_port     = "3389"
       #       translated_address  = "10.200.13.5"
       #       protocols           = ["TCP"]
