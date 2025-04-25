@@ -1,5 +1,5 @@
 # GWC Hub resources
-conn_sub_id        = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+conn_sub_id        = "<REDACTED>"
 hub_resource_group = "rg-connectivity-gwc-net"
 
 hub_location  = "germanywestcentral"
@@ -90,29 +90,11 @@ vpn_client_address_space = ["10.10.252.0/22"]
 vpn_auth_types          = ["Certificate"]
 root_certificate_name_1 = "rootCA"
 public_cert_data_1      = <<EOF
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+<REDACTED>
 EOF
 root_certificate_name_2 = "SUBCA"
 public_cert_data_2      = <<EOF
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+<REDACTED>
 EOF
 
 vpn_client_protocols = ["IkeV2", "OpenVPN"]
@@ -126,14 +108,14 @@ vpn_gateway_custom_route_address_prefixes = [
 local_network_gateway_name = "lgw-connectivity-gwc"
 vpn_connection_name        = "vgw-connectivity-gwc-s2s-onpremises"
 vpn_connection_type        = "IPsec"
-local_network_gateway_pip  = "xx.xx.xx.xx"
+local_network_gateway_pip  = "<REDACTED>"
 local_network_address_space = [
   "192.168.1.0/25",
   "192.168.2.0/25",
   "192.168.3.0/24"
 ]
 
-ipsec_shared_key = "xxxxxxxxx"
+ipsec_shared_key = "<REDACTED>"
 
 dh_group         = "DHGroup2"
 ike_encryption   = "GCMAES256"
@@ -173,30 +155,30 @@ firewall_policy_rule_collection_groups = {
         rules = [
           {
             name                  = "onprem_tcp_access_to_DC"
-            source_addresses      = ["192.168.131.3/32", "192.168.131.4/32"]
+            source_addresses      = ["192.168.1.3/32", "192.168.1.4/32"]
             destination_ports     = ["49443", "464", "88", "3268", "3269", "636", "389", "137", "49152-65535", "135", "445", "5985", "53", "123", "138", "139", "3389"]
-            destination_addresses = ["10.100.8.4/32", "10.100.8.5/32"]
+            destination_addresses = ["10.10.8.4/32", "10.10.8.5/32"]
             protocols             = ["TCP"]
           },
           {
             name                  = "onprem_udp_access_to_DC"
-            source_addresses      = ["192.168.131.3/32", "192.168.131.4/32"]
+            source_addresses      = ["192.168.1.3/32", "192.168.1.4/32"]
             destination_ports     = ["464", "88", "389", "137", "135", "53", "123", "138", "139", "3389"]
-            destination_addresses = ["10.100.8.4/32", "10.100.8.5/32"]
+            destination_addresses = ["10.10.8.4/32", "10.10.8.5/32"]
             protocols             = ["UDP"]
           },
           {
             name                  = "DC_tcp_access_to_onprem"
-            source_addresses      = ["10.100.8.4/32", "10.100.8.5/32"]
+            source_addresses      = ["10.10.8.4/32", "10.10.8.5/32"]
             destination_ports     = ["49443", "464", "88", "3268", "3269", "636", "389", "137", "49152-65535", "135", "445", "5985", "53", "123", "138", "139", "3389"]
-            destination_addresses = ["192.168.131.3/32", "192.168.131.4/32"]
+            destination_addresses = ["192.168.1.3/32", "192.168.1.4/32"]
             protocols             = ["TCP"]
           },
           {
             name                  = "DC_udp_access_to_onprem"
-            source_addresses      = ["10.100.8.4/32", "10.100.8.5/32"]
+            source_addresses      = ["10.10.8.4/32", "10.10.8.5/32"]
             destination_ports     = ["464", "88", "389", "137", "135", "53", "123", "138", "139", "3389"]
-            destination_addresses = ["192.168.131.3/32", "192.168.131.4/32"]
+            destination_addresses = ["192.168.1.3/32", "192.168.1.4/32"]
             protocols             = ["UDP"]
           }
         ]
@@ -209,7 +191,7 @@ firewall_policy_rule_collection_groups = {
         rules = [
           {
             name              = "Allow-MS-Updates_fqdns"
-            source_addresses  = ["10.100.8.0/27", "10.100.8.160/27"]
+            source_addresses  = ["10.10.8.0/27", "10.10.8.160/27"]
             destination_fqdns = ["*.windowsupdate.microsoft.com", "*.update.microsoft.com", "*.windowsupdate.com", "*.download.windowsupdate.com", "*.ntservicepack.microsoft.com"]
             protocols = [{
               port = "443"
@@ -222,7 +204,7 @@ firewall_policy_rule_collection_groups = {
           },
           {
             name                  = "Allow-MS-Updates_fqdnTags"
-            source_addresses      = ["10.100.8.0/27", "10.100.8.160/27"]
+            source_addresses      = ["10.10.8.0/27", "10.10.8.160/27"]
             destination_fqdn_tags = ["WindowsUpdate"]
             protocols = [{
               port = "443"
@@ -267,7 +249,7 @@ firewall_policy_rule_collection_groups = {
       #       destination_ports   = ["3389"]
       #       destination_address = "x.x.x.x" # AZ FW IP
       #       translated_port     = "3389"
-      #       translated_address  = "10.100.13.5"
+      #       translated_address  = "10.10.13.5"
       #       protocols           = ["TCP"]
       #     }
       #   ]
@@ -277,7 +259,7 @@ firewall_policy_rule_collection_groups = {
 }
 
 # GWC PROD resources
-prod_sub_id         = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+prod_sub_id         = "<REDACTED>"
 prod_resource_group = "rg-prod-gwc-net"
 prod_vnet_name      = "vnet-prod-gwc"
 prod_vnet_location  = "germanywestcentral"
@@ -332,7 +314,7 @@ global_tags = {
 
 
 # GWC DEV resources
-dev_sub_id               = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+dev_sub_id               = "<REDACTED>"
 dev_resource_group       = "rg-dev-gwc-net"
 dev_vnet_name            = "vnet-dev-gwc"
 dev_vnet_location        = "germanywestcentral"
@@ -369,7 +351,7 @@ dev_udr_routes = {
 }
 
 # GWC identity resources
-identity_sub_id               = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+identity_sub_id               = "<REDACTED>"
 identity_resource_group       = "rg-identity-gwc-net"
 identity_vnet_name            = "vnet-identity-gwc"
 identity_vnet_location        = "germanywestcentral"
@@ -406,7 +388,7 @@ identity_udr_routes = {
 }
 
 # GWC mgmt resources
-mgmt_sub_id               = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+mgmt_sub_id               = "<REDACTED>"
 mgmt_resource_group       = "rg-mgmt-gwc-net"
 mgmt_vnet_name            = "vnet-mgmt-gwc"
 mgmt_vnet_location        = "germanywestcentral"
