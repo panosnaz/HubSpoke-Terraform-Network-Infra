@@ -337,11 +337,19 @@ variable "vpn_auth_types" {
   description = "VPN Gateway auth types"
   type        = list(string)
 }
-variable "root_certificate_name" {
+variable "root_certificate_name_1" {
   description = "p2s VPN root certificate"
   type        = string
 }
-variable "public_cert_data" {
+variable "public_cert_data_1" {
+  description = "p2s VPN public_cert_data"
+  type        = string
+}
+variable "root_certificate_name_2" {
+  description = "p2s VPN root certificate"
+  type        = string
+}
+variable "public_cert_data_2" {
   description = "p2s VPN public_cert_data"
   type        = string
 }
