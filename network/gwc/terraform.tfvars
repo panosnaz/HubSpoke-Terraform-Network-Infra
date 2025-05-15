@@ -18,6 +18,7 @@ firewall_zones                 = ["1", "2", "3"]
 bastion_subnet                 = "10.1.2.64/26"
 bastion_host                   = "bastion-connectivity-gwc"
 bastion_ip                     = "bastion-connectivity-gwc-pip"
+dns_servers                    = ["10.1.8.24", "10.1.8.25"]
 conn_vnet_subnets = {
   subnet_1 = {
     name             = "snet-connectivity-gwc-devops"

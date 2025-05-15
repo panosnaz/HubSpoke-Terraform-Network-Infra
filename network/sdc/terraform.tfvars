@@ -18,7 +18,7 @@ firewall_zones                 = ["1", "2", "3"]
 bastion_subnet                 = "10.2.2.64/26"
 bastion_host                   = "bastion-connectivity-sdc"
 bastion_ip                     = "bastion-connectivity-sdc-pip"
-
+dns_servers                    = ["10.2.8.24", "10.2.8.25"]
 conn_vnet_subnets = {
   subnet_1 = {
     name             = "snet-connectivity-sdc-devops"
